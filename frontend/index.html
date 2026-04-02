@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI 대화를 통해 맞춤형 수학 YouTube 영상과 EBS 강좌를 추천받으세요.">
+    <title>MathVideo AI - 수학 영상 추천</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ═══════════ Header ═══════════ -->
+    <header id="app-header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">📐</span>
+                <h1>MathVideo <span class="accent">AI</span></h1>
+            </div>
+            <nav class="header-nav">
+                <button class="nav-btn active" data-tab="chat" id="nav-chat">
+                    <span class="nav-icon">💬</span> AI 채팅
+                </button>
+                <button class="nav-btn" data-tab="youtube" id="nav-youtube">
+                    <span class="nav-icon">▶️</span> YouTube
+                </button>
+                <button class="nav-btn" data-tab="ebs" id="nav-ebs">
+                    <span class="nav-icon">📚</span> EBS 강좌
+                </button>
+                <button class="nav-btn" data-tab="playlist" id="nav-playlist">
+                    <span class="nav-icon">📋</span> 재생목록
+                    <span class="playlist-badge" id="playlist-badge" style="display:none;">0</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ═══════════ Main Content ═══════════ -->
+    <main id="app-main">
+        <!-- ── Chat Panel ── -->
+        <section class="panel active" id="panel-chat">
+            <div class="panel-header">
+                <h2>🎓 AI 학습 도우미</h2>
+                <p class="panel-subtitle">대화를 통해 딱 맞는 수학 강의를 찾아드려요</p>
+            </div>
+            <div class="chat-container" id="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Messages will be inserted here -->
+                </div>
+                <div class="chat-input-wrapper">
+                    <div class="chat-input-box">
+                        <input type="text" id="chat-input" placeholder="메시지를 입력하세요..." autocomplete="off">
+                        <button id="chat-send" class="send-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13"></path>
+                                <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="quick-actions" id="quick-actions">
+                        <button class="quick-btn" data-msg="중학생이에요">중학생</button>
+                        <button class="quick-btn" data-msg="고등학생이에요">고등학생</button>
+                        <button class="quick-btn" data-msg="수능 준비하고 있어요">수능 준비생</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── YouTube Panel ── -->
+        <section class="panel" id="panel-youtube">
+            <div class="panel-header">
+                <h2>▶️ YouTube 영상 검색</h2>
+                <p class="panel-subtitle">수학 강의 영상을 검색하고 재생목록에 추가하세요</p>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="yt-search-input" placeholder="검색어를 입력하세요 (예: 수학I 삼각함수)">
+                <button id="yt-search-btn" class="search-btn">🔍 검색</button>
+            </div>
+            <div class="video-grid" id="yt-results">
+                <div class="empty-state">
+                    <span class="empty-icon">🔍</span>
+                    <p>AI 채팅에서 추천받거나 직접 검색해보세요!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── EBS Panel ── -->
+        <section class="panel" id="panel-ebs">
+            <div class="panel-header">
+                <h2>📚 EBS 강좌 추천</h2>
+                <p class="panel-subtitle">EBSi 수학 강좌를 수준별로 추천해드려요</p>
+            </div>
+            <div class="ebs-filters" id="ebs-filters">
+                <button class="filter-btn active" data-level="">전체</button>
+                <button class="filter-btn" data-level="middle">중학교</button>
+                <button class="filter-btn" data-level="high">고등학교</button>
+                <button class="filter-btn" data-level="suneung">수능</button>
+            </div>
+            <div class="ebs-grid" id="ebs-results">
+                <!-- EBS courses will be loaded here -->
+            </div>
+        </section>
+
+        <!-- ── Playlist Panel ── -->
+        <section class="panel" id="panel-playlist">
+            <div class="panel-header">
+                <h2>📋 내 재생목록</h2>
+                <p class="panel-subtitle">저장한 영상들을 한 곳에서 관리하세요</p>
+            </div>
+            <div class="playlist-actions" id="playlist-actions">
+                <button id="playlist-clear-btn" class="action-btn danger">🗑️ 전체 삭제</button>
+                <button id="playlist-export-btn" class="action-btn primary">📤 내보내기</button>
+            </div>
+            <div class="playlist-list" id="playlist-list">
+                <div class="empty-state">
+                    <span class="empty-icon">📋</span>
+                    <p>아직 재생목록이 비어있어요.<br>영상 카드에서 ➕ 버튼을 눌러 추가해보세요!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ═══════════ Toast ═══════════ -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ═══════════ Scripts ═══════════ -->
+    <script src="main.js"></script>
+    <script src="chat.js"></script>
+    <script src="youtube.js"></script>
+    <script src="ebs.js"></script>
+</body>
+</html>
