@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="학생과 AI의 대화를 통해 맞춤형 수학 영상을 추천하는 EdTech 플랫폼">
+    <title>EBS 수학 영상 학습 추천 시스템</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- ========== 사이드바 ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📐</span>
+                <h1 class="logo-text">수학 학습</h1>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-btn active" data-view="chat" id="nav-chat">
+                <span class="nav-icon">💬</span>
+                <span>AI 학습 도우미</span>
+            </button>
+            <button class="nav-btn" data-view="search" id="nav-search">
+                <span class="nav-icon">🔍</span>
+                <span>영상 검색</span>
+            </button>
+            <button class="nav-btn" data-view="playlists" id="nav-playlists">
+                <span class="nav-icon">📋</span>
+                <span>재생목록</span>
+            </button>
+            <button class="nav-btn" data-view="dashboard" id="nav-dashboard">
+                <span class="nav-icon">📊</span>
+                <span>학습 현황</span>
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info" id="user-info">
+                <span class="user-avatar">👤</span>
+                <div>
+                    <p class="user-name" id="user-name">demo_student</p>
+                    <p class="user-grade" id="user-grade">중2</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ========== 메인 컨텐츠 ========== -->
+    <main class="main-content">
+        <!-- === AI 채팅 뷰 === -->
+        <section class="view active" id="view-chat">
+            <div class="view-header">
+                <h2>🤖 AI 수학 학습 도우미</h2>
+                <p class="view-subtitle">어떤 수학 단원이 어려운지 말씀해 주세요. 맞춤 영상을 추천해 드릴게요!</p>
+            </div>
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <p>안녕하세요! 수학 학습 도우미입니다 😊</p>
+                            <p>어떤 학년이시고, 어떤 수학 단원이 어렵나요?</p>
+                            <p class="hint">예: "중학교 2학년인데 일차함수가 어려워요"</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="수학 질문을 입력하세요..." autocomplete="off">
+                    <button id="chat-send-btn" class="btn-primary">
+                        <span>전송</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- === 영상 검색 뷰 === -->
+        <section class="view" id="view-search">
+            <div class="view-header">
+                <h2>🔍 영상 검색</h2>
+                <p class="view-subtitle">EBS와 YouTube에서 수학 강의를 검색하세요</p>
+            </div>
+            <div class="search-filters">
+                <div class="filter-row">
+                    <input type="text" id="search-query" placeholder="검색어 (예: 일차함수)" class="search-input">
+                    <select id="filter-grade" class="filter-select">
+                        <option value="">학년 전체</option>
+                        <option value="중1">중1</option>
+                        <option value="중2">중2</option>
+                        <option value="중3">중3</option>
+                        <option value="고1">고1</option>
+                        <option value="고2">고2</option>
+                        <option value="고3">고3</option>
+                    </select>
+                    <select id="filter-difficulty" class="filter-select">
+                        <option value="">난이도 전체</option>
+                        <option value="easy">기초</option>
+                        <option value="medium">보통</option>
+                        <option value="hard">심화</option>
+                    </select>
+                    <select id="filter-source" class="filter-select">
+                        <option value="all">전체</option>
+                        <option value="ebs">EBS</option>
+                        <option value="youtube">YouTube</option>
+                    </select>
+                    <button id="search-btn" class="btn-primary">검색</button>
+                </div>
+            </div>
+            <div class="video-grid" id="search-results">
+                <div class="empty-state">
+                    <span class="empty-icon">📚</span>
+                    <p>검색어를 입력하여 수학 강의를 찾아보세요</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- === 재생목록 뷰 === -->
+        <section class="view" id="view-playlists">
+            <div class="view-header">
+                <h2>📋 내 재생목록</h2>
+                <button id="create-playlist-btn" class="btn-secondary">+ 새 재생목록</button>
+            </div>
+            <div class="playlists-container" id="playlists-container">
+                <div class="empty-state">
+                    <span class="empty-icon">📝</span>
+                    <p>아직 재생목록이 없습니다. 새로 만들어 보세요!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- === 대시보드 뷰 === -->
+        <section class="view" id="view-dashboard">
+            <div class="view-header">
+                <h2>📊 학습 현황</h2>
+                <p class="view-subtitle">나의 학습 진도와 취약 단원을 확인하세요</p>
+            </div>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📺</div>
+                    <div class="stat-value" id="stat-watched">0</div>
+                    <div class="stat-label">시청한 영상</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="stat-completed">0</div>
+                    <div class="stat-label">완료한 영상</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value" id="stat-score">0점</div>
+                    <div class="stat-label">평균 퀴즈 점수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value" id="stat-time">0분</div>
+                    <div class="stat-label">총 학습 시간</div>
+                </div>
+            </div>
+            <div class="dashboard-section">
+                <h3>⚠️ 취약 단원</h3>
+                <div id="weak-topics-list" class="weak-topics-list">
+                    <div class="empty-state">
+                        <span class="empty-icon">📈</span>
+                        <p>학습 데이터가 쌓이면 취약 단원을 분석해 드려요</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========== 모달: 새 재생목록 ========== -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal-create-playlist">
+            <div class="modal-header">
+                <h3>📋 새 재생목록 만들기</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label for="playlist-name">이름</label>
+                <input type="text" id="playlist-name" placeholder="예: 중2 함수 정복">
+                <label for="playlist-desc">설명 (선택)</label>
+                <textarea id="playlist-desc" placeholder="재생목록 설명..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="modal-cancel">취소</button>
+                <button class="btn-primary" id="modal-create">만들기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+2026-04-09 15:14:52,604 [INFO] EbsMathVideo: 🚀 EBS 수학 영상 학습 시스템을 시작합니다...
+2026-04-09 15:14:52,637 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:14:52,637 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("users")
+2026-04-09 15:14:52,637 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,638 [INFO] sqlalchemy.engine.Engine: PRAGMA temp.table_info("users")
+2026-04-09 15:14:52,638 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,638 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("videos")
+2026-04-09 15:14:52,638 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,638 [INFO] sqlalchemy.engine.Engine: PRAGMA temp.table_info("videos")
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("progress")
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: PRAGMA temp.table_info("progress")
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlists")
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: PRAGMA temp.table_info("playlists")
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlist_videos")
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: PRAGMA temp.table_info("playlist_videos")
+2026-04-09 15:14:52,639 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:14:52,640 [INFO] sqlalchemy.engine.Engine: 
+CREATE TABLE users (
+	id INTEGER NOT NULL, 
+	username VARCHAR(50) NOT NULL, 
+	password_hash VARCHAR(255) NOT NULL, 
+	grade VARCHAR(10), 
+	created_at DATETIME, 
+	updated_at DATETIME, 
+	PRIMARY KEY (id)
+)
+
+
+2026-04-09 15:14:52,640 [INFO] sqlalchemy.engine.Engine: [no key 0.00008s] ()
+2026-04-09 15:14:52,648 [INFO] sqlalchemy.engine.Engine: CREATE UNIQUE INDEX ix_users_username ON users (username)
+2026-04-09 15:14:52,648 [INFO] sqlalchemy.engine.Engine: [no key 0.00008s] ()
+2026-04-09 15:14:52,653 [INFO] sqlalchemy.engine.Engine: 
+CREATE TABLE videos (
+	id INTEGER NOT NULL, 
+	title VARCHAR(200) NOT NULL, 
+	url VARCHAR(500) NOT NULL, 
+	thumbnail_url VARCHAR(500), 
+	source VARCHAR(20), 
+	topic VARCHAR(100) NOT NULL, 
+	subtopic VARCHAR(100), 
+	grade VARCHAR(10), 
+	difficulty VARCHAR(20), 
+	duration_seconds INTEGER, 
+	description TEXT, 
+	channel_name VARCHAR(100), 
+	view_count INTEGER, 
+	created_at DATETIME, 
+	PRIMARY KEY (id)
+)
+
+
+2026-04-09 15:14:52,653 [INFO] sqlalchemy.engine.Engine: [no key 0.00008s] ()
+2026-04-09 15:14:52,658 [INFO] sqlalchemy.engine.Engine: 
+CREATE TABLE progress (
+	id INTEGER NOT NULL, 
+	user_id INTEGER NOT NULL, 
+	video_id INTEGER NOT NULL, 
+	watched_seconds INTEGER, 
+	watch_percentage FLOAT, 
+	completed BOOLEAN, 
+	quiz_score FLOAT, 
+	last_position INTEGER, 
+	watch_count INTEGER, 
+	created_at DATETIME, 
+	updated_at DATETIME, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(user_id) REFERENCES users (id), 
+	FOREIGN KEY(video_id) REFERENCES videos (id)
+)
+
+
+2026-04-09 15:14:52,658 [INFO] sqlalchemy.engine.Engine: [no key 0.00008s] ()
+2026-04-09 15:14:52,663 [INFO] sqlalchemy.engine.Engine: CREATE INDEX ix_progress_video_id ON progress (video_id)
+2026-04-09 15:14:52,663 [INFO] sqlalchemy.engine.Engine: [no key 0.00007s] ()
+2026-04-09 15:14:52,668 [INFO] sqlalchemy.engine.Engine: CREATE INDEX ix_progress_user_id ON progress (user_id)
+2026-04-09 15:14:52,668 [INFO] sqlalchemy.engine.Engine: [no key 0.00007s] ()
+2026-04-09 15:14:52,673 [INFO] sqlalchemy.engine.Engine: 
+CREATE TABLE playlists (
+	id INTEGER NOT NULL, 
+	user_id INTEGER NOT NULL, 
+	name VARCHAR(100) NOT NULL, 
+	description TEXT, 
+	is_public BOOLEAN, 
+	created_at DATETIME, 
+	updated_at DATETIME, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(user_id) REFERENCES users (id)
+)
+
+
+2026-04-09 15:14:52,673 [INFO] sqlalchemy.engine.Engine: [no key 0.00010s] ()
+2026-04-09 15:14:52,678 [INFO] sqlalchemy.engine.Engine: CREATE INDEX ix_playlists_user_id ON playlists (user_id)
+2026-04-09 15:14:52,678 [INFO] sqlalchemy.engine.Engine: [no key 0.00007s] ()
+2026-04-09 15:14:52,684 [INFO] sqlalchemy.engine.Engine: 
+CREATE TABLE playlist_videos (
+	id INTEGER NOT NULL, 
+	playlist_id INTEGER NOT NULL, 
+	video_id INTEGER NOT NULL, 
+	position INTEGER, 
+	added_at DATETIME, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(playlist_id) REFERENCES playlists (id), 
+	FOREIGN KEY(video_id) REFERENCES videos (id)
+)
+
+
+2026-04-09 15:14:52,684 [INFO] sqlalchemy.engine.Engine: [no key 0.00008s] ()
+2026-04-09 15:14:52,688 [INFO] sqlalchemy.engine.Engine: CREATE INDEX ix_playlist_videos_video_id ON playlist_videos (video_id)
+2026-04-09 15:14:52,688 [INFO] sqlalchemy.engine.Engine: [no key 0.00007s] ()
+2026-04-09 15:14:52,695 [INFO] sqlalchemy.engine.Engine: CREATE INDEX ix_playlist_videos_playlist_id ON playlist_videos (playlist_id)
+2026-04-09 15:14:52,695 [INFO] sqlalchemy.engine.Engine: [no key 0.00008s] ()
+2026-04-09 15:14:52,700 [INFO] sqlalchemy.engine.Engine: COMMIT
+2026-04-09 15:14:52,700 [INFO] EbsMathVideo: ✅ 데이터베이스 초기화 완료
+2026-04-09 15:14:52,707 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:14:52,709 [INFO] sqlalchemy.engine.Engine: SELECT users.id AS users_id, users.username AS users_username, users.password_hash AS users_password_hash, users.grade AS users_grade, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users
+ LIMIT ? OFFSET ?
+2026-04-09 15:14:52,709 [INFO] sqlalchemy.engine.Engine: [generated in 0.00013s] (1, 0)
+2026-04-09 15:14:52,710 [WARNING] passlib.handlers.bcrypt: (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python314\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-04-09 15:14:52,714 [INFO] sqlalchemy.engine.Engine: ROLLBACK
+2026-04-09 15:16:32,038 [INFO] EbsMathVideo: 🚀 EBS 수학 영상 학습 시스템을 시작합니다...
+2026-04-09 15:16:32,042 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:16:32,042 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("users")
+2026-04-09 15:16:32,042 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:16:32,043 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("videos")
+2026-04-09 15:16:32,043 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:16:32,043 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("progress")
+2026-04-09 15:16:32,043 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:16:32,043 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlists")
+2026-04-09 15:16:32,043 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:16:32,043 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlist_videos")
+2026-04-09 15:16:32,043 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:16:32,043 [INFO] sqlalchemy.engine.Engine: COMMIT
+2026-04-09 15:16:32,043 [INFO] EbsMathVideo: ✅ 데이터베이스 초기화 완료
+2026-04-09 15:16:32,050 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:16:32,051 [INFO] sqlalchemy.engine.Engine: SELECT users.id AS users_id, users.username AS users_username, users.password_hash AS users_password_hash, users.grade AS users_grade, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users
+ LIMIT ? OFFSET ?
+2026-04-09 15:16:32,051 [INFO] sqlalchemy.engine.Engine: [generated in 0.00025s] (1, 0)
+2026-04-09 15:16:32,217 [INFO] sqlalchemy.engine.Engine: INSERT INTO users (username, password_hash, grade, created_at, updated_at) VALUES (?, ?, ?, ?, ?)
+2026-04-09 15:16:32,217 [INFO] sqlalchemy.engine.Engine: [generated in 0.00026s] ('demo_student', '$2b$12$r9G4l6lPxSuBHSYprgebZucFoCf8bJWiMI4Ivp8O2wuxJGIQCmoQG', '중2', '2026-04-09 06:16:32.217515', '2026-04-09 06:16:32.217522')
+2026-04-09 15:16:32,219 [INFO] sqlalchemy.engine.Engine: COMMIT
+2026-04-09 15:16:32,223 [INFO] EbsMathVideo: ✅ 데모 사용자 생성: demo_student / 1234
+2026-04-09 15:16:32,224 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:16:32,226 [INFO] sqlalchemy.engine.Engine: SELECT count(*) AS count_1 
+FROM (SELECT videos.id AS videos_id, videos.title AS videos_title, videos.url AS videos_url, videos.thumbnail_url AS videos_thumbnail_url, videos.source AS videos_source, videos.topic AS videos_topic, videos.subtopic AS videos_subtopic, videos.grade AS videos_grade, videos.difficulty AS videos_difficulty, videos.duration_seconds AS videos_duration_seconds, videos.description AS videos_description, videos.channel_name AS videos_channel_name, videos.view_count AS videos_view_count, videos.created_at AS videos_created_at 
+FROM videos) AS anon_1
+2026-04-09 15:16:32,226 [INFO] sqlalchemy.engine.Engine: [generated in 0.00011s] ()
+2026-04-09 15:16:32,233 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,233 [INFO] sqlalchemy.engine.Engine: [generated in 0.00045s (insertmanyvalues) 1/100 (ordered; batch not supported)] ('[EBS 고3] 미적분II - 여러 가지 적분법 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0246', '', 'ebs', '미적분II', '여러 가지 적분법', '고3', 'hard', 1200, 'EBS 고3 미적분II 여러 가지 적분법 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232946')
+2026-04-09 15:16:32,233 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,233 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 2/100 (ordered; batch not supported)] ('[EBS 고3] 미적분II - 여러 가지 적분법 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0245', '', 'ebs', '미적분II', '여러 가지 적분법', '고3', 'medium', 900, 'EBS 고3 미적분II 여러 가지 적분법 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232948')
+2026-04-09 15:16:32,233 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,233 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 3/100 (ordered; batch not supported)] ('[EBS 고3] 미적분II - 여러 가지 적분법 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0244', '', 'ebs', '미적분II', '여러 가지 적분법', '고3', 'easy', 2100, 'EBS 고3 미적분II 여러 가지 적분법 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232949')
+2026-04-09 15:16:32,233 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,233 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 4/100 (ordered; batch not supported)] ('[EBS 고3] 미적분II - 여러 가지 미분법 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0243', '', 'ebs', '미적분II', '여러 가지 미분법', '고3', 'hard', 1800, 'EBS 고3 미적분II 여러 가지 미분법 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232950')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 5/100 (ordered; batch not supported)] ('[EBS 고3] 미적분II - 여러 가지 미분법 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0242', '', 'ebs', '미적분II', '여러 가지 미분법', '고3', 'medium', 1500, 'EBS 고3 미적분II 여러 가지 미분법 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232951')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 6/100 (ordered; batch not supported)] ('[EBS 고3] 미적분II - 여러 가지 미분법 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0241', '', 'ebs', '미적분II', '여러 가지 미분법', '고3', 'easy', 1200, 'EBS 고3 미적분II 여러 가지 미분법 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232951')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 7/100 (ordered; batch not supported)] ('[EBS 고3] 확률과 통계 - 통계적 추정 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0240', '', 'ebs', '확률과 통계', '통계적 추정', '고3', 'hard', 900, 'EBS 고3 확률과 통계 통계적 추정 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232952')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 8/100 (ordered; batch not supported)] ('[EBS 고3] 확률과 통계 - 통계적 추정 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0239', '', 'ebs', '확률과 통계', '통계적 추정', '고3', 'medium', 2100, 'EBS 고3 확률과 통계 통계적 추정 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232953')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 9/100 (ordered; batch not supported)] ('[EBS 고3] 확률과 통계 - 통계적 추정 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0238', '', 'ebs', '확률과 통계', '통계적 추정', '고3', 'easy', 1800, 'EBS 고3 확률과 통계 통계적 추정 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232954')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 10/100 (ordered; batch not supported)] ('[EBS 고3] 확률과 통계 - 확률분포 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0237', '', 'ebs', '확률과 통계', '확률분포', '고3', 'hard', 1500, 'EBS 고3 확률과 통계 확률분포 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232954')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 11/100 (ordered; batch not supported)] ('[EBS 고3] 확률과 통계 - 확률분포 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0236', '', 'ebs', '확률과 통계', '확률분포', '고3', 'medium', 1200, 'EBS 고3 확률과 통계 확률분포 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232955')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 12/100 (ordered; batch not supported)] ('[EBS 고3] 확률과 통계 - 확률분포 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0235', '', 'ebs', '확률과 통계', '확률분포', '고3', 'easy', 900, 'EBS 고3 확률과 통계 확률분포 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232956')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 13/100 (ordered; batch not supported)] ('[EBS 고3] 이차곡선 - 타원과 쌍곡선 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0234', '', 'ebs', '이차곡선', '타원과 쌍곡선', '고3', 'hard', 2100, 'EBS 고3 이차곡선 타원과 쌍곡선 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232956')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 14/100 (ordered; batch not supported)] ('[EBS 고3] 이차곡선 - 타원과 쌍곡선 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0233', '', 'ebs', '이차곡선', '타원과 쌍곡선', '고3', 'medium', 1800, 'EBS 고3 이차곡선 타원과 쌍곡선 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232957')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 15/100 (ordered; batch not supported)] ('[EBS 고3] 이차곡선 - 타원과 쌍곡선 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0232', '', 'ebs', '이차곡선', '타원과 쌍곡선', '고3', 'easy', 1500, 'EBS 고3 이차곡선 타원과 쌍곡선 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232958')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 16/100 (ordered; batch not supported)] ('[EBS 고3] 이차곡선 - 포물선 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0231', '', 'ebs', '이차곡선', '포물선', '고3', 'hard', 1200, 'EBS 고3 이차곡선 포물선 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232959')
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,234 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 17/100 (ordered; batch not supported)] ('[EBS 고3] 이차곡선 - 포물선 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0230', '', 'ebs', '이차곡선', '포물선', '고3', 'medium', 900, 'EBS 고3 이차곡선 포물선 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232959')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 18/100 (ordered; batch not supported)] ('[EBS 고3] 이차곡선 - 포물선 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0229', '', 'ebs', '이차곡선', '포물선', '고3', 'easy', 2100, 'EBS 고3 이차곡선 포물선 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232960')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 19/100 (ordered; batch not supported)] ('[EBS 고3] 공간좌표 - 공간도형 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0228', '', 'ebs', '공간좌표', '공간도형', '고3', 'hard', 1800, 'EBS 고3 공간좌표 공간도형 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232961')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 20/100 (ordered; batch not supported)] ('[EBS 고3] 공간좌표 - 공간도형 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0227', '', 'ebs', '공간좌표', '공간도형', '고3', 'medium', 1500, 'EBS 고3 공간좌표 공간도형 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232961')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 21/100 (ordered; batch not supported)] ('[EBS 고3] 공간좌표 - 공간도형 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0226', '', 'ebs', '공간좌표', '공간도형', '고3', 'easy', 1200, 'EBS 고3 공간좌표 공간도형 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232962')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 22/100 (ordered; batch not supported)] ('[EBS 고3] 공간좌표 - 공간좌표 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0225', '', 'ebs', '공간좌표', '공간좌표', '고3', 'hard', 900, 'EBS 고3 공간좌표 공간좌표 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232963')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 23/100 (ordered; batch not supported)] ('[EBS 고3] 공간좌표 - 공간좌표 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0224', '', 'ebs', '공간좌표', '공간좌표', '고3', 'medium', 2100, 'EBS 고3 공간좌표 공간좌표 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232964')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 24/100 (ordered; batch not supported)] ('[EBS 고3] 공간좌표 - 공간좌표 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0223', '', 'ebs', '공간좌표', '공간좌표', '고3', 'easy', 1800, 'EBS 고3 공간좌표 공간좌표 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232964')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 25/100 (ordered; batch not supported)] ('[EBS 고3] 벡터 - 벡터의 내적 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0222', '', 'ebs', '벡터', '벡터의 내적', '고3', 'hard', 1500, 'EBS 고3 벡터 벡터의 내적 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232965')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 26/100 (ordered; batch not supported)] ('[EBS 고3] 벡터 - 벡터의 내적 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0221', '', 'ebs', '벡터', '벡터의 내적', '고3', 'medium', 1200, 'EBS 고3 벡터 벡터의 내적 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232966')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 27/100 (ordered; batch not supported)] ('[EBS 고3] 벡터 - 벡터의 내적 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0220', '', 'ebs', '벡터', '벡터의 내적', '고3', 'easy', 900, 'EBS 고3 벡터 벡터의 내적 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232967')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 28/100 (ordered; batch not supported)] ('[EBS 고3] 벡터 - 벡터의 연산 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0219', '', 'ebs', '벡터', '벡터의 연산', '고3', 'hard', 2100, 'EBS 고3 벡터 벡터의 연산 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232967')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 29/100 (ordered; batch not supported)] ('[EBS 고3] 벡터 - 벡터의 연산 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0218', '', 'ebs', '벡터', '벡터의 연산', '고3', 'medium', 1800, 'EBS 고3 벡터 벡터의 연산 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232968')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 30/100 (ordered; batch not supported)] ('[EBS 고3] 벡터 - 벡터의 연산 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0217', '', 'ebs', '벡터', '벡터의 연산', '고3', 'easy', 1500, 'EBS 고3 벡터 벡터의 연산 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232969')
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,235 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 31/100 (ordered; batch not supported)] ('[EBS 고2] 적분 - 정적분의 활용 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0216', '', 'ebs', '적분', '정적분의 활용', '고2', 'hard', 1200, 'EBS 고2 적분 정적분의 활용 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232969')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 32/100 (ordered; batch not supported)] ('[EBS 고2] 적분 - 정적분의 활용 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0215', '', 'ebs', '적분', '정적분의 활용', '고2', 'medium', 900, 'EBS 고2 적분 정적분의 활용 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232970')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 33/100 (ordered; batch not supported)] ('[EBS 고2] 적분 - 정적분의 활용 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0214', '', 'ebs', '적분', '정적분의 활용', '고2', 'easy', 2100, 'EBS 고2 적분 정적분의 활용 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232971')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 34/100 (ordered; batch not supported)] ('[EBS 고2] 적분 - 부정적분과 정적분 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0213', '', 'ebs', '적분', '부정적분과 정적분', '고2', 'hard', 1800, 'EBS 고2 적분 부정적분과 정적분 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232971')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 35/100 (ordered; batch not supported)] ('[EBS 고2] 적분 - 부정적분과 정적분 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0212', '', 'ebs', '적분', '부정적분과 정적분', '고2', 'medium', 1500, 'EBS 고2 적분 부정적분과 정적분 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232972')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 36/100 (ordered; batch not supported)] ('[EBS 고2] 적분 - 부정적분과 정적분 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0211', '', 'ebs', '적분', '부정적분과 정적분', '고2', 'easy', 1200, 'EBS 고2 적분 부정적분과 정적분 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232973')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 37/100 (ordered; batch not supported)] ('[EBS 고2] 미분 - 도함수의 활용 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0210', '', 'ebs', '미분', '도함수의 활용', '고2', 'hard', 900, 'EBS 고2 미분 도함수의 활용 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232974')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 38/100 (ordered; batch not supported)] ('[EBS 고2] 미분 - 도함수의 활용 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0209', '', 'ebs', '미분', '도함수의 활용', '고2', 'medium', 2100, 'EBS 고2 미분 도함수의 활용 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232974')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 39/100 (ordered; batch not supported)] ('[EBS 고2] 미분 - 도함수의 활용 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0208', '', 'ebs', '미분', '도함수의 활용', '고2', 'easy', 1800, 'EBS 고2 미분 도함수의 활용 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232975')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 40/100 (ordered; batch not supported)] ('[EBS 고2] 미분 - 미분계수와 도함수 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0207', '', 'ebs', '미분', '미분계수와 도함수', '고2', 'hard', 1500, 'EBS 고2 미분 미분계수와 도함수 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232976')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 41/100 (ordered; batch not supported)] ('[EBS 고2] 미분 - 미분계수와 도함수 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0206', '', 'ebs', '미분', '미분계수와 도함수', '고2', 'medium', 1200, 'EBS 고2 미분 미분계수와 도함수 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232976')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 42/100 (ordered; batch not supported)] ('[EBS 고2] 미분 - 미분계수와 도함수 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0205', '', 'ebs', '미분', '미분계수와 도함수', '고2', 'easy', 900, 'EBS 고2 미분 미분계수와 도함수 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232977')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 43/100 (ordered; batch not supported)] ('[EBS 고2] 극한 - 급수 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0204', '', 'ebs', '극한', '급수', '고2', 'hard', 2100, 'EBS 고2 극한 급수 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232978')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 44/100 (ordered; batch not supported)] ('[EBS 고2] 극한 - 급수 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0203', '', 'ebs', '극한', '급수', '고2', 'medium', 1800, 'EBS 고2 극한 급수 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232979')
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,236 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 45/100 (ordered; batch not supported)] ('[EBS 고2] 극한 - 급수 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0202', '', 'ebs', '극한', '급수', '고2', 'easy', 1500, 'EBS 고2 극한 급수 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232979')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 46/100 (ordered; batch not supported)] ('[EBS 고2] 극한 - 수열의 극한 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0201', '', 'ebs', '극한', '수열의 극한', '고2', 'hard', 1200, 'EBS 고2 극한 수열의 극한 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232980')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 47/100 (ordered; batch not supported)] ('[EBS 고2] 극한 - 수열의 극한 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0200', '', 'ebs', '극한', '수열의 극한', '고2', 'medium', 900, 'EBS 고2 극한 수열의 극한 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232981')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 48/100 (ordered; batch not supported)] ('[EBS 고2] 극한 - 수열의 극한 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0199', '', 'ebs', '극한', '수열의 극한', '고2', 'easy', 2100, 'EBS 고2 극한 수열의 극한 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232981')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 49/100 (ordered; batch not supported)] ('[EBS 고2] 수열 - 수열의 합 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0198', '', 'ebs', '수열', '수열의 합', '고2', 'hard', 1800, 'EBS 고2 수열 수열의 합 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232982')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 50/100 (ordered; batch not supported)] ('[EBS 고2] 수열 - 수열의 합 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0197', '', 'ebs', '수열', '수열의 합', '고2', 'medium', 1500, 'EBS 고2 수열 수열의 합 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232983')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 51/100 (ordered; batch not supported)] ('[EBS 고2] 수열 - 수열의 합 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0196', '', 'ebs', '수열', '수열의 합', '고2', 'easy', 1200, 'EBS 고2 수열 수열의 합 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232983')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 52/100 (ordered; batch not supported)] ('[EBS 고2] 수열 - 등비수열 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0195', '', 'ebs', '수열', '등비수열', '고2', 'hard', 900, 'EBS 고2 수열 등비수열 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232984')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 53/100 (ordered; batch not supported)] ('[EBS 고2] 수열 - 등비수열 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0194', '', 'ebs', '수열', '등비수열', '고2', 'medium', 2100, 'EBS 고2 수열 등비수열 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232985')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 54/100 (ordered; batch not supported)] ('[EBS 고2] 수열 - 등비수열 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0193', '', 'ebs', '수열', '등비수열', '고2', 'easy', 1800, 'EBS 고2 수열 등비수열 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232986')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 55/100 (ordered; batch not supported)] ('[EBS 고2] 수열 - 등차수열 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0192', '', 'ebs', '수열', '등차수열', '고2', 'hard', 1500, 'EBS 고2 수열 등차수열 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232986')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 56/100 (ordered; batch not supported)] ('[EBS 고2] 수열 - 등차수열 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0191', '', 'ebs', '수열', '등차수열', '고2', 'medium', 1200, 'EBS 고2 수열 등차수열 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232987')
+2026-04-09 15:16:32,237 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 57/100 (ordered; batch not supported)] ('[EBS 고2] 수열 - 등차수열 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0190', '', 'ebs', '수열', '등차수열', '고2', 'easy', 900, 'EBS 고2 수열 등차수열 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232988')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 58/100 (ordered; batch not supported)] ('[EBS 고2] 삼각함수 - 삼각함수의 그래프 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0189', '', 'ebs', '삼각함수', '삼각함수의 그래프', '고2', 'hard', 2100, 'EBS 고2 삼각함수 삼각함수의 그래프 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232988')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 59/100 (ordered; batch not supported)] ('[EBS 고2] 삼각함수 - 삼각함수의 그래프 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0188', '', 'ebs', '삼각함수', '삼각함수의 그래프', '고2', 'medium', 1800, 'EBS 고2 삼각함수 삼각함수의 그래프 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232989')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 60/100 (ordered; batch not supported)] ('[EBS 고2] 삼각함수 - 삼각함수의 그래프 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0187', '', 'ebs', '삼각함수', '삼각함수의 그래프', '고2', 'easy', 1500, 'EBS 고2 삼각함수 삼각함수의 그래프 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232990')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 61/100 (ordered; batch not supported)] ('[EBS 고2] 삼각함수 - 삼각함수의 뜻 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0186', '', 'ebs', '삼각함수', '삼각함수의 뜻', '고2', 'hard', 1200, 'EBS 고2 삼각함수 삼각함수의 뜻 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232991')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 62/100 (ordered; batch not supported)] ('[EBS 고2] 삼각함수 - 삼각함수의 뜻 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0185', '', 'ebs', '삼각함수', '삼각함수의 뜻', '고2', 'medium', 900, 'EBS 고2 삼각함수 삼각함수의 뜻 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232991')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 63/100 (ordered; batch not supported)] ('[EBS 고2] 삼각함수 - 삼각함수의 뜻 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0184', '', 'ebs', '삼각함수', '삼각함수의 뜻', '고2', 'easy', 2100, 'EBS 고2 삼각함수 삼각함수의 뜻 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232992')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 64/100 (ordered; batch not supported)] ('[EBS 고2] 지수와 로그 - 로그 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0183', '', 'ebs', '지수와 로그', '로그', '고2', 'hard', 1800, 'EBS 고2 지수와 로그 로그 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232993')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 65/100 (ordered; batch not supported)] ('[EBS 고2] 지수와 로그 - 로그 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0182', '', 'ebs', '지수와 로그', '로그', '고2', 'medium', 1500, 'EBS 고2 지수와 로그 로그 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232993')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 66/100 (ordered; batch not supported)] ('[EBS 고2] 지수와 로그 - 로그 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0181', '', 'ebs', '지수와 로그', '로그', '고2', 'easy', 1200, 'EBS 고2 지수와 로그 로그 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232994')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 67/100 (ordered; batch not supported)] ('[EBS 고2] 지수와 로그 - 지수 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0180', '', 'ebs', '지수와 로그', '지수', '고2', 'hard', 900, 'EBS 고2 지수와 로그 지수 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232995')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 68/100 (ordered; batch not supported)] ('[EBS 고2] 지수와 로그 - 지수 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0179', '', 'ebs', '지수와 로그', '지수', '고2', 'medium', 2100, 'EBS 고2 지수와 로그 지수 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232995')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 69/100 (ordered; batch not supported)] ('[EBS 고2] 지수와 로그 - 지수 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0178', '', 'ebs', '지수와 로그', '지수', '고2', 'easy', 1800, 'EBS 고2 지수와 로그 지수 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232996')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 70/100 (ordered; batch not supported)] ('[EBS 고1] 경우의 수 - 이항정리 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0177', '', 'ebs', '경우의 수', '이항정리', '고1', 'hard', 1500, 'EBS 고1 경우의 수 이항정리 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232997')
+2026-04-09 15:16:32,238 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 71/100 (ordered; batch not supported)] ('[EBS 고1] 경우의 수 - 이항정리 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0176', '', 'ebs', '경우의 수', '이항정리', '고1', 'medium', 1200, 'EBS 고1 경우의 수 이항정리 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.232998')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 72/100 (ordered; batch not supported)] ('[EBS 고1] 경우의 수 - 이항정리 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0175', '', 'ebs', '경우의 수', '이항정리', '고1', 'easy', 900, 'EBS 고1 경우의 수 이항정리 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.232998')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 73/100 (ordered; batch not supported)] ('[EBS 고1] 경우의 수 - 순열과 조합 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0174', '', 'ebs', '경우의 수', '순열과 조합', '고1', 'hard', 2100, 'EBS 고1 경우의 수 순열과 조합 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.232999')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 74/100 (ordered; batch not supported)] ('[EBS 고1] 경우의 수 - 순열과 조합 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0173', '', 'ebs', '경우의 수', '순열과 조합', '고1', 'medium', 1800, 'EBS 고1 경우의 수 순열과 조합 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.233000')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 75/100 (ordered; batch not supported)] ('[EBS 고1] 경우의 수 - 순열과 조합 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0172', '', 'ebs', '경우의 수', '순열과 조합', '고1', 'easy', 1500, 'EBS 고1 경우의 수 순열과 조합 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.233000')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 76/100 (ordered; batch not supported)] ('[EBS 고1] 함수 - 유리함수와 무리함수 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0171', '', 'ebs', '함수', '유리함수와 무리함수', '고1', 'hard', 1200, 'EBS 고1 함수 유리함수와 무리함수 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.233001')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 77/100 (ordered; batch not supported)] ('[EBS 고1] 함수 - 유리함수와 무리함수 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0170', '', 'ebs', '함수', '유리함수와 무리함수', '고1', 'medium', 900, 'EBS 고1 함수 유리함수와 무리함수 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.233002')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 78/100 (ordered; batch not supported)] ('[EBS 고1] 함수 - 유리함수와 무리함수 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0169', '', 'ebs', '함수', '유리함수와 무리함수', '고1', 'easy', 2100, 'EBS 고1 함수 유리함수와 무리함수 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.233002')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 79/100 (ordered; batch not supported)] ('[EBS 고1] 함수 - 함수의 뜻 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0168', '', 'ebs', '함수', '함수의 뜻', '고1', 'hard', 1800, 'EBS 고1 함수 함수의 뜻 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.233003')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 80/100 (ordered; batch not supported)] ('[EBS 고1] 함수 - 함수의 뜻 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0167', '', 'ebs', '함수', '함수의 뜻', '고1', 'medium', 1500, 'EBS 고1 함수 함수의 뜻 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.233004')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 81/100 (ordered; batch not supported)] ('[EBS 고1] 함수 - 함수의 뜻 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0166', '', 'ebs', '함수', '함수의 뜻', '고1', 'easy', 1200, 'EBS 고1 함수 함수의 뜻 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.233005')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 82/100 (ordered; batch not supported)] ('[EBS 고1] 집합과 명제 - 명제 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0165', '', 'ebs', '집합과 명제', '명제', '고1', 'hard', 900, 'EBS 고1 집합과 명제 명제 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.233005')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 83/100 (ordered; batch not supported)] ('[EBS 고1] 집합과 명제 - 명제 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0164', '', 'ebs', '집합과 명제', '명제', '고1', 'medium', 2100, 'EBS 고1 집합과 명제 명제 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.233006')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 84/100 (ordered; batch not supported)] ('[EBS 고1] 집합과 명제 - 명제 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0163', '', 'ebs', '집합과 명제', '명제', '고1', 'easy', 1800, 'EBS 고1 집합과 명제 명제 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.233007')
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,239 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 85/100 (ordered; batch not supported)] ('[EBS 고1] 집합과 명제 - 집합 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0162', '', 'ebs', '집합과 명제', '집합', '고1', 'hard', 1500, 'EBS 고1 집합과 명제 집합 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.233007')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 86/100 (ordered; batch not supported)] ('[EBS 고1] 집합과 명제 - 집합 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0161', '', 'ebs', '집합과 명제', '집합', '고1', 'medium', 1200, 'EBS 고1 집합과 명제 집합 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.233008')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 87/100 (ordered; batch not supported)] ('[EBS 고1] 집합과 명제 - 집합 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0160', '', 'ebs', '집합과 명제', '집합', '고1', 'easy', 900, 'EBS 고1 집합과 명제 집합 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.233009')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 88/100 (ordered; batch not supported)] ('[EBS 고1] 도형의 방정식 - 원의 방정식 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0159', '', 'ebs', '도형의 방정식', '원의 방정식', '고1', 'hard', 2100, 'EBS 고1 도형의 방정식 원의 방정식 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.233010')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 89/100 (ordered; batch not supported)] ('[EBS 고1] 도형의 방정식 - 원의 방정식 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0158', '', 'ebs', '도형의 방정식', '원의 방정식', '고1', 'medium', 1800, 'EBS 고1 도형의 방정식 원의 방정식 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.233010')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 90/100 (ordered; batch not supported)] ('[EBS 고1] 도형의 방정식 - 원의 방정식 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0157', '', 'ebs', '도형의 방정식', '원의 방정식', '고1', 'easy', 1500, 'EBS 고1 도형의 방정식 원의 방정식 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.233011')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 91/100 (ordered; batch not supported)] ('[EBS 고1] 도형의 방정식 - 직선의 방정식 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0156', '', 'ebs', '도형의 방정식', '직선의 방정식', '고1', 'hard', 1200, 'EBS 고1 도형의 방정식 직선의 방정식 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.233012')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 92/100 (ordered; batch not supported)] ('[EBS 고1] 도형의 방정식 - 직선의 방정식 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0155', '', 'ebs', '도형의 방정식', '직선의 방정식', '고1', 'medium', 900, 'EBS 고1 도형의 방정식 직선의 방정식 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.233012')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 93/100 (ordered; batch not supported)] ('[EBS 고1] 도형의 방정식 - 직선의 방정식 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0154', '', 'ebs', '도형의 방정식', '직선의 방정식', '고1', 'easy', 2100, 'EBS 고1 도형의 방정식 직선의 방정식 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.233013')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 94/100 (ordered; batch not supported)] ('[EBS 고1] 방정식과 부등식 - 이차함수와 이차방정식 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0153', '', 'ebs', '방정식과 부등식', '이차함수와 이차방정식', '고1', 'hard', 1800, 'EBS 고1 방정식과 부등식 이차함수와 이차방정식 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.233014')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 95/100 (ordered; batch not supported)] ('[EBS 고1] 방정식과 부등식 - 이차함수와 이차방정식 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0152', '', 'ebs', '방정식과 부등식', '이차함수와 이차방정식', '고1', 'medium', 1500, 'EBS 고1 방정식과 부등식 이차함수와 이차방정식 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.233014')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 96/100 (ordered; batch not supported)] ('[EBS 고1] 방정식과 부등식 - 이차함수와 이차방정식 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0151', '', 'ebs', '방정식과 부등식', '이차함수와 이차방정식', '고1', 'easy', 1200, 'EBS 고1 방정식과 부등식 이차함수와 이차방정식 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.233015')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 97/100 (ordered; batch not supported)] ('[EBS 고1] 방정식과 부등식 - 이차방정식 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0150', '', 'ebs', '방정식과 부등식', '이차방정식', '고1', 'hard', 900, 'EBS 고1 방정식과 부등식 이차방정식 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.233016')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 98/100 (ordered; batch not supported)] ('[EBS 고1] 방정식과 부등식 - 이차방정식 (개념정리)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0149', '', 'ebs', '방정식과 부등식', '이차방정식', '고1', 'medium', 2100, 'EBS 고1 방정식과 부등식 이차방정식 개념정리 강의', 'EBSi', 0, '2026-04-09 06:16:32.233017')
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,240 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 99/100 (ordered; batch not supported)] ('[EBS 고1] 방정식과 부등식 - 이차방정식 (기초)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0148', '', 'ebs', '방정식과 부등식', '이차방정식', '고1', 'easy', 1800, 'EBS 고1 방정식과 부등식 이차방정식 기초 강의', 'EBSi', 0, '2026-04-09 06:16:32.233017')
+2026-04-09 15:16:32,241 [INFO] sqlalchemy.engine.Engine: INSERT INTO videos (title, url, thumbnail_url, source, topic, subtopic, grade, difficulty, duration_seconds, description, channel_name, view_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-04-09 15:16:32,241 [INFO] sqlalchemy.engine.Engine: [insertmanyvalues 100/100 (ordered; batch not supported)] ('[EBS 고1] 방정식과 부등식 - 복소수 (심화)', 'https://www.ebsi.co.kr/ebs/lms/player/onStepLsnView.ebs?courseId=S0147', '', 'ebs', '방정식과 부등식', '복소수', '고1', 'hard', 1500, 'EBS 고1 방정식과 부등식 복소수 심화 강의', 'EBSi', 0, '2026-04-09 06:16:32.233018')
+2026-04-09 15:16:32,241 [INFO] sqlalchemy.engine.Engine: COMMIT
+2026-04-09 15:16:32,246 [INFO] EbsMathVideo: ✅ EBS 영상 시드 데이터 투입 완료 (100개)
+2026-04-09 15:19:36,649 [INFO] EbsMathVideo: 🚀 EBS 수학 영상 학습 시스템을 시작합니다...
+2026-04-09 15:19:36,653 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:19:36,653 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("users")
+2026-04-09 15:19:36,653 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:19:36,653 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("videos")
+2026-04-09 15:19:36,654 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:19:36,654 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("progress")
+2026-04-09 15:19:36,654 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:19:36,654 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlists")
+2026-04-09 15:19:36,654 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:19:36,654 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlist_videos")
+2026-04-09 15:19:36,654 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:19:36,654 [INFO] sqlalchemy.engine.Engine: COMMIT
+2026-04-09 15:19:36,654 [INFO] EbsMathVideo: ✅ 데이터베이스 초기화 완료
+2026-04-09 15:19:36,661 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:19:36,662 [INFO] sqlalchemy.engine.Engine: SELECT users.id AS users_id, users.username AS users_username, users.password_hash AS users_password_hash, users.grade AS users_grade, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users
+ LIMIT ? OFFSET ?
+2026-04-09 15:19:36,662 [INFO] sqlalchemy.engine.Engine: [generated in 0.00011s] (1, 0)
+2026-04-09 15:19:36,664 [INFO] sqlalchemy.engine.Engine: SELECT count(*) AS count_1 
+FROM (SELECT videos.id AS videos_id, videos.title AS videos_title, videos.url AS videos_url, videos.thumbnail_url AS videos_thumbnail_url, videos.source AS videos_source, videos.topic AS videos_topic, videos.subtopic AS videos_subtopic, videos.grade AS videos_grade, videos.difficulty AS videos_difficulty, videos.duration_seconds AS videos_duration_seconds, videos.description AS videos_description, videos.channel_name AS videos_channel_name, videos.view_count AS videos_view_count, videos.created_at AS videos_created_at 
+FROM videos) AS anon_1
+2026-04-09 15:19:36,664 [INFO] sqlalchemy.engine.Engine: [generated in 0.00018s] ()
+2026-04-09 15:19:36,665 [INFO] sqlalchemy.engine.Engine: ROLLBACK
+2026-04-09 15:22:47,578 [INFO] EbsMathVideo: 🚀 EBS 수학 영상 학습 시스템을 시작합니다...
+2026-04-09 15:22:47,582 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:22:47,582 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("users")
+2026-04-09 15:22:47,582 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:22:47,583 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("videos")
+2026-04-09 15:22:47,583 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:22:47,583 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("progress")
+2026-04-09 15:22:47,583 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:22:47,583 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlists")
+2026-04-09 15:22:47,583 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:22:47,584 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlist_videos")
+2026-04-09 15:22:47,584 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:22:47,584 [INFO] sqlalchemy.engine.Engine: COMMIT
+2026-04-09 15:22:47,584 [INFO] EbsMathVideo: ✅ 데이터베이스 초기화 완료
+2026-04-09 15:22:47,591 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:22:47,592 [INFO] sqlalchemy.engine.Engine: SELECT users.id AS users_id, users.username AS users_username, users.password_hash AS users_password_hash, users.grade AS users_grade, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users
+ LIMIT ? OFFSET ?
+2026-04-09 15:22:47,592 [INFO] sqlalchemy.engine.Engine: [generated in 0.00012s] (1, 0)
+2026-04-09 15:22:47,595 [INFO] sqlalchemy.engine.Engine: SELECT count(*) AS count_1 
+FROM (SELECT videos.id AS videos_id, videos.title AS videos_title, videos.url AS videos_url, videos.thumbnail_url AS videos_thumbnail_url, videos.source AS videos_source, videos.topic AS videos_topic, videos.subtopic AS videos_subtopic, videos.grade AS videos_grade, videos.difficulty AS videos_difficulty, videos.duration_seconds AS videos_duration_seconds, videos.description AS videos_description, videos.channel_name AS videos_channel_name, videos.view_count AS videos_view_count, videos.created_at AS videos_created_at 
+FROM videos) AS anon_1
+2026-04-09 15:22:47,595 [INFO] sqlalchemy.engine.Engine: [generated in 0.00022s] ()
+2026-04-09 15:22:47,595 [INFO] sqlalchemy.engine.Engine: ROLLBACK
+2026-04-09 15:23:38,203 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:23:38,204 [INFO] sqlalchemy.engine.Engine: SELECT playlists.id AS playlists_id, playlists.user_id AS playlists_user_id, playlists.name AS playlists_name, playlists.description AS playlists_description, playlists.is_public AS playlists_is_public, playlists.created_at AS playlists_created_at, playlists.updated_at AS playlists_updated_at 
+FROM playlists 
+WHERE playlists.user_id = ? ORDER BY playlists.updated_at DESC
+2026-04-09 15:23:38,204 [INFO] sqlalchemy.engine.Engine: [generated in 0.00013s] (1,)
+2026-04-09 15:23:38,205 [INFO] sqlalchemy.engine.Engine: ROLLBACK
