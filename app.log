@@ -413,3 +413,28 @@ FROM playlists
 WHERE playlists.user_id = ? ORDER BY playlists.updated_at DESC
 2026-04-09 15:23:38,204 [INFO] sqlalchemy.engine.Engine: [generated in 0.00013s] (1,)
 2026-04-09 15:23:38,205 [INFO] sqlalchemy.engine.Engine: ROLLBACK
+2026-04-09 15:30:02,327 [INFO] EbsMathVideo: 👋 서버가 종료됩니다.
+2026-04-09 15:30:03,245 [INFO] EbsMathVideo: 🚀 EBS 수학 영상 학습 시스템을 시작합니다...
+2026-04-09 15:30:03,249 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:30:03,249 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("users")
+2026-04-09 15:30:03,249 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:30:03,250 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("videos")
+2026-04-09 15:30:03,250 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:30:03,250 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("progress")
+2026-04-09 15:30:03,250 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:30:03,250 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlists")
+2026-04-09 15:30:03,250 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:30:03,250 [INFO] sqlalchemy.engine.Engine: PRAGMA main.table_info("playlist_videos")
+2026-04-09 15:30:03,250 [INFO] sqlalchemy.engine.Engine: [raw sql] ()
+2026-04-09 15:30:03,250 [INFO] sqlalchemy.engine.Engine: COMMIT
+2026-04-09 15:30:03,250 [INFO] EbsMathVideo: ✅ 데이터베이스 초기화 완료
+2026-04-09 15:30:03,257 [INFO] sqlalchemy.engine.Engine: BEGIN (implicit)
+2026-04-09 15:30:03,259 [INFO] sqlalchemy.engine.Engine: SELECT users.id AS users_id, users.username AS users_username, users.password_hash AS users_password_hash, users.grade AS users_grade, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users
+ LIMIT ? OFFSET ?
+2026-04-09 15:30:03,259 [INFO] sqlalchemy.engine.Engine: [generated in 0.00012s] (1, 0)
+2026-04-09 15:30:03,261 [INFO] sqlalchemy.engine.Engine: SELECT count(*) AS count_1 
+FROM (SELECT videos.id AS videos_id, videos.title AS videos_title, videos.url AS videos_url, videos.thumbnail_url AS videos_thumbnail_url, videos.source AS videos_source, videos.topic AS videos_topic, videos.subtopic AS videos_subtopic, videos.grade AS videos_grade, videos.difficulty AS videos_difficulty, videos.duration_seconds AS videos_duration_seconds, videos.description AS videos_description, videos.channel_name AS videos_channel_name, videos.view_count AS videos_view_count, videos.created_at AS videos_created_at 
+FROM videos) AS anon_1
+2026-04-09 15:30:03,261 [INFO] sqlalchemy.engine.Engine: [generated in 0.00015s] ()
+2026-04-09 15:30:03,262 [INFO] sqlalchemy.engine.Engine: ROLLBACK

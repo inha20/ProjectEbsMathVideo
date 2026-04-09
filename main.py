@@ -13,7 +13,8 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
+from core.exceptions import BaseBusinessException
 
 from config import get_settings
 from database import init_db, SessionLocal
@@ -112,6 +113,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.exception_handler(BaseBusinessException)
+async def business_exception_handler(request: Request, exc: BaseBusinessException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.message},
+    )
 
 # 정적 파일 & 템플릿
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

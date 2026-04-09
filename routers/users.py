@@ -7,12 +7,16 @@ passlib 대신 bcrypt를 직접 사용 (bcrypt 4.x / Python 3.14 호환)
 import bcrypt
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 from schemas import UserCreate, UserLogin, UserResponse, TokenResponse
 from models import User
 from config import get_settings
 from database import get_db
+from core.exceptions import AuthenticationError
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/login")
 
 router = APIRouter(prefix="/api/users", tags=["사용자"])
 settings = get_settings()
@@ -68,10 +72,10 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(login_data: UserLogin, db: Session = Depends(get_db)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """로그인"""
-    user = db.query(User).filter(User.username == login_data.username).first()
-    if not user or not verify_password(login_data.password, user.password_hash):
+    user = db.query(User).filter(User.username == form_data.username).first()
+    if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="잘못된 사용자 이름 또는 비밀번호입니다",
@@ -89,12 +93,23 @@ async def login(login_data: UserLogin, db: Session = Depends(get_db)):
     )
 
 
-@router.get("/me")
-async def get_current_user():
-    """현재 사용자 정보 (데모용)"""
-    return {
-        "id": 1,
-        "username": "demo_student",
-        "grade": "중2",
-        "message": "데모 모드: JWT 인증 미적용 상태",
-    }
+async def get_current_user_dep(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    """JWT 토큰을 검증하고 현재 사용자를 반환하는 의존성"""
+    try:
+        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+        username: str = payload.get("username")
+        if username is None:
+            raise AuthenticationError("유효하지 않은 토큰입니다.")
+    except JWTError:
+        raise AuthenticationError("유효하지 않은 토큰입니다.")
+
+    user = db.query(User).filter(User.username == username).first()
+    if user is None:
+        raise AuthenticationError("사용자를 찾을 수 없습니다.")
+    return user
+
+
+@router.get("/me", response_model=UserResponse)
+async def get_current_user_info(current_user: User = Depends(get_current_user_dep)):
+    """현재 사용자 정보"""
+    return current_user
